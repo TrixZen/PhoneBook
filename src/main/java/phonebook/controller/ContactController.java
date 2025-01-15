@@ -11,12 +11,8 @@ import java.util.List;
 @RequestMapping("/api/contact")
 public class ContactController {
 
-    ContactServiceImpl contactServiceImpl;
-
     @Autowired
-    public ContactController(ContactServiceImpl contactServiceImpl) {
-        this.contactServiceImpl = contactServiceImpl;
-    }
+    ContactServiceImpl contactServiceImpl;
 
     @PostMapping("/add")
     public String add(@RequestBody Contact contact) {
@@ -25,7 +21,7 @@ public class ContactController {
     }
 
     @GetMapping("/")
-    public List<Contact> index() {
+    public List<Contact> getContacts() {
         return contactServiceImpl.getContacts();
     }
 

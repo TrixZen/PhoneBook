@@ -26,20 +26,20 @@ public class ContactServiceImpl implements ContactService {
     @Override
     public void deleteContact(String name, String number) {
         Contact contact = contactRepository.findByNameAndNumber(name, number)
-                .orElseThrow(() -> new RuntimeException("Contact not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Contact not found"));
         contactRepository.delete(contact);
     }
 
     @Override
     public Contact findContact(String name, String number) {
         return contactRepository.findByNameAndNumber(name, number)
-                .orElseThrow(() -> new RuntimeException("Contact not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Contact not found"));
     }
 
     @Override
     public void editContact(Contact newContact, String oldName, String oldNumber) {
         Contact contact = contactRepository.findByNameAndNumber(oldName, oldNumber)
-                .orElseThrow(() -> new RuntimeException("Contact not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Contact not found"));
 
         contact.setName(newContact.getName());
         contact.setNumber(newContact.getNumber());

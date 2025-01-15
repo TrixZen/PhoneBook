@@ -28,7 +28,7 @@ async function loadContacts() {
         const response = await fetch('/api/contact/');
         const contacts = await response.json();
         const tbody = document.querySelector('#contactsTable tbody');
-        tbody.innerHTML = '';
+        tbody.innerHTML = '/';
 
         contacts.forEach((contact, index) => {
             const tr = document.createElement('tr');
