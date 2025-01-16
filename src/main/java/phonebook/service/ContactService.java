@@ -3,6 +3,7 @@ package phonebook.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import phonebook.model.Contact;
+import phonebook.model.ContactUpdateRequest;
 import phonebook.repository.ContactRepository;
 
 import java.util.List;
@@ -30,15 +31,14 @@ public class ContactService {
     }
 
     // Update existing contact
-    public Contact updateContact(String oldName, String oldNumber, Contact newContact) {
-        Optional<Contact> existingContact = contactRepository.findByNameAndNumber(oldName, oldNumber);
+    public void updateContact(ContactUpdateRequest contactUpdateRequest) {
+        Optional<Contact> existingContact = contactRepository.findByNameAndNumber(contactUpdateRequest.getOldName(), contactUpdateRequest.getOldNumber());
         if (existingContact.isPresent()) {
             Contact contact = existingContact.get();
-            contact.setName(newContact.getName());
-            contact.setNumber(newContact.getNumber());
-            return contactRepository.save(contact);
+            contact.setName(contactUpdateRequest.getNewName());
+            contact.setNumber(contactUpdateRequest.getNewNumber());
+            contactRepository.save(contact);
         }
-        return null;
     }
 
     // Delete contact by name and number

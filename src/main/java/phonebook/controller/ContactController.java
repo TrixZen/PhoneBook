@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import phonebook.model.Contact;
+import phonebook.model.ContactUpdateRequest;
 import phonebook.service.ContactService;
 
 import java.util.List;
@@ -35,11 +36,14 @@ public class ContactController {
         return ResponseEntity.ok(contactService.searchContactsByName(searchName));
     }
     // Update contact
-    @PutMapping("/save")
-    public ResponseEntity<Contact> updateContact(@RequestParam String oldName, @RequestParam String oldNumber, @RequestBody Contact newContact) {
-        Contact updatedContact = contactService.updateContact(oldName, oldNumber, newContact);
-        return updatedContact != null ? ResponseEntity.ok(updatedContact) : ResponseEntity.notFound().build();
+    @PutMapping("/saveSelected")
+    public ResponseEntity<Void> saveSelectedContacts(@RequestBody List<ContactUpdateRequest> contacts) {
+        for (ContactUpdateRequest contact : contacts) {
+            contactService.updateContact(contact);
+        }
+        return ResponseEntity.ok().build();
     }
+
 
     // Delete contact
     @DeleteMapping("/delete")

@@ -4,9 +4,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Event listener for searching
     document.getElementById('searchButton').addEventListener('click', searchContacts);
     // Event listener for viewing all contacts
-        document.getElementById('viewAllButton').addEventListener('click', loadContacts);
-        // Event listener for deleting selected contacts
-        document.getElementById('deleteSelectedButton').addEventListener('click', deleteSelectedContacts);
+    document.getElementById('viewAllButton').addEventListener('click', loadContacts);
+    // Event listener for deleting selected contacts
+    document.getElementById('deleteSelectedButton').addEventListener('click', deleteSelectedContacts);
+    // Event listener for saving all update contacts
+    document.getElementById('saveButton').addEventListener('click', saveContacts);
 });
 
 // Add contact
@@ -48,7 +50,6 @@ async function loadContacts() {
                 <td contenteditable="true">${contact.name}</td>
                 <td contenteditable="true">${contact.number}</td>
                 <td>
-                    <button onclick="saveContact(this, '${contact.name}', '${contact.number}')" class="btn btn-sm btn-success">Save</button>
                     <button onclick="deleteContact('${contact.name}', '${contact.number}')" class="btn btn-sm btn-danger">Delete</button>
                 </td>
             `;
@@ -59,7 +60,50 @@ async function loadContacts() {
     }
 }
 
+// Save all contacts
+async function saveContacts() {
+    // Сонгогдсон мөрийг авах
+     const selectedCheckboxes = document.querySelectorAll('.contact-checkbox:checked');
+
+    if (selectedCheckboxes.length === 0) {
+        alert('Please select at least one row to save.');
+        return;
+   }
+  // Сонгогдсон бүх мөрний шинэ утгуудыг авах
+    const contactsToSave = [];
+    selectedCheckboxes.forEach(checkbox => {
+
+        const row = checkbox.closest('tr'); // Сонгосон мөрийг авах
+
+        const oldName = checkbox.getAttribute('data-name');
+        const oldNumber = checkbox.getAttribute('data-number');
+        const newName = row.children[2].textContent.trim();
+        const newNumber = row.children[3].textContent.trim();
+
+        contactsToSave.push({ oldName, oldNumber, newName, newNumber });
+    });
+
+    try {
+        const response = await fetch('/api/contact/saveSelected', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(contactsToSave)
+        });
+
+        if (response.ok) {
+            alert('Contact saved successfully!');
+            loadContacts();
+        } else {
+            const error = await response.text();
+            alert(`Failed to save contact: ${error}`);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
 // Save edited contact
+/*
 async function saveContact(button, oldName, oldNumber) {
     const row = button.closest('tr');
     const newName = row.children[2].textContent.trim();
@@ -78,6 +122,7 @@ async function saveContact(button, oldName, oldNumber) {
         console.error('Error:', error);
     }
 }
+*/
 
 // Delete contact
 async function deleteContact(name, number) {
@@ -113,12 +158,15 @@ async function searchContacts() {
                 <td contenteditable="true">${contact.name}</td>
                 <td contenteditable="true">${contact.number}</td>
                 <td>
-                    <button onclick="saveContact(this, '${contact.name}', '${contact.number}')" class="btn btn-sm btn-success">Save</button>
                     <button onclick="deleteContact('${contact.name}', '${contact.number}')" class="btn btn-sm btn-danger">Delete</button>
                 </td>
             `;
             tbody.appendChild(tr);
         });
+        if (response.ok) {
+             document.getElementById('searchName').value = '';
+
+        }
     } catch (error) {
         console.error('Error:', error);
     }

@@ -14,5 +14,4 @@ public interface ContactRepository extends JpaRepository<Contact, Long> {
 
     Optional<Contact> findByNameAndNumber(String name, String number);
 
-    void deleteByNameAndNumber(String name, String number);
 }
