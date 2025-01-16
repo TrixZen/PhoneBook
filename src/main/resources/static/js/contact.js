@@ -3,6 +3,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Event listener for searching
     document.getElementById('searchButton').addEventListener('click', searchContacts);
+    // Event listener for viewing all contacts
+        document.getElementById('viewAllButton').addEventListener('click', loadContacts);
+        // Event listener for deleting selected contacts
+        document.getElementById('deleteSelectedButton').addEventListener('click', deleteSelectedContacts);
 });
 
 // Add contact
@@ -39,6 +43,7 @@ async function loadContacts() {
         contacts.forEach((contact, index) => {
             const tr = document.createElement('tr');
             tr.innerHTML = `
+                <td><input type="checkbox" class="contact-checkbox" data-name="${contact.name}" data-number="${contact.number}"></td>
                 <td>${index + 1}</td>
                 <td contenteditable="true">${contact.name}</td>
                 <td contenteditable="true">${contact.number}</td>
@@ -57,8 +62,8 @@ async function loadContacts() {
 // Save edited contact
 async function saveContact(button, oldName, oldNumber) {
     const row = button.closest('tr');
-    const newName = row.children[1].textContent.trim();
-    const newNumber = row.children[2].textContent.trim();
+    const newName = row.children[2].textContent.trim();
+    const newNumber = row.children[3].textContent.trim();
 
     try {
         const response = await fetch(`/api/contact/save?oldName=${oldName}&oldNumber=${oldNumber}`, {
@@ -95,7 +100,7 @@ async function searchContacts() {
     const searchName = document.getElementById('searchName').value.trim();
 
     try {
-        const response = await fetch(`/api/contact/search?name=${searchName}`);
+        const response = await fetch(`/api/contact/search?searchName=${searchName}`);
         const contacts = await response.json();
         const tbody = document.querySelector('#contactsTable tbody');
         tbody.innerHTML = '';
@@ -103,9 +108,10 @@ async function searchContacts() {
         contacts.forEach((contact, index) => {
             const tr = document.createElement('tr');
             tr.innerHTML = `
+                <td><input type="checkbox" class="contact-checkbox" data-name="${contact.name}" data-number="${contact.number}"></td>
                 <td>${index + 1}</td>
-                <td>${contact.name}</td>
-                <td>${contact.number}</td>
+                <td contenteditable="true">${contact.name}</td>
+                <td contenteditable="true">${contact.number}</td>
                 <td>
                     <button onclick="saveContact(this, '${contact.name}', '${contact.number}')" class="btn btn-sm btn-success">Save</button>
                     <button onclick="deleteContact('${contact.name}', '${contact.number}')" class="btn btn-sm btn-danger">Delete</button>
@@ -113,6 +119,54 @@ async function searchContacts() {
             `;
             tbody.appendChild(tr);
         });
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+// Select or deselect all checkboxes
+function toggleSelectAll() {
+    const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+    const checkboxes = document.querySelectorAll('.contact-checkbox');
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = selectAllCheckbox.checked;
+    });
+}
+
+// Delete selected contacts
+async function deleteSelectedContacts() {
+    const selectedCheckboxes = document.querySelectorAll('.contact-checkbox:checked');
+
+    if (selectedCheckboxes.length === 0) {
+        alert('Please select contacts to delete.');
+        return;
+    }
+
+    if (!confirm('Are you sure you want to delete selected contacts?')) return;
+
+    const contactsToDelete = [];
+    selectedCheckboxes.forEach(checkbox => {
+        contactsToDelete.push({
+            name: checkbox.getAttribute('data-name'),
+            number: checkbox.getAttribute('data-number')
+        });
+    });
+
+    try {
+        const response = await fetch('/api/contact/deleteSelected', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(contactsToDelete)
+        });
+
+        if (response.ok) {
+            loadContacts();
+        } else {
+            const error = await response.text();
+            console.error('Server error:', error);
+            alert(`Failed to delete contacts: ${error}`);
+
+        }
     } catch (error) {
         console.error('Error:', error);
     }

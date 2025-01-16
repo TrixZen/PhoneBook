@@ -9,6 +9,10 @@ import java.util.Optional;
 
 @Repository
 public interface ContactRepository extends JpaRepository<Contact, Long> {
+
+    List<Contact> findByNameContainingIgnoreCase(String name);
+
     Optional<Contact> findByNameAndNumber(String name, String number);
-    Optional<List<Contact>> findByName(String name);
+
+    void deleteByNameAndNumber(String name, String number);
 }
