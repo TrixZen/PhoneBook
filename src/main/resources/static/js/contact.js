@@ -1,4 +1,11 @@
-// static/js/contact.js
+document.addEventListener('DOMContentLoaded', () => {
+    loadContacts();
+
+    // Event listener for searching
+    document.getElementById('searchButton').addEventListener('click', searchContacts);
+});
+
+// Add contact
 async function addContact(event) {
     event.preventDefault();
     const formData = {
@@ -9,9 +16,7 @@ async function addContact(event) {
     try {
         const response = await fetch('/api/contact/add', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(formData)
         });
         if (response.ok) {
@@ -23,21 +28,22 @@ async function addContact(event) {
     }
 }
 
+// Load all contacts
 async function loadContacts() {
     try {
         const response = await fetch('/api/contact/');
         const contacts = await response.json();
         const tbody = document.querySelector('#contactsTable tbody');
-        tbody.innerHTML = '/';
+        tbody.innerHTML = '';
 
         contacts.forEach((contact, index) => {
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td>${index + 1}</td>
-                <td>${contact.name}</td>
-                <td>${contact.number}</td>
+                <td contenteditable="true">${contact.name}</td>
+                <td contenteditable="true">${contact.number}</td>
                 <td>
-                    <button onclick="editContact('${contact.name}', '${contact.number}')" class="btn btn-sm btn-primary">Edit</button>
+                    <button onclick="saveContact(this, '${contact.name}', '${contact.number}')" class="btn btn-sm btn-success">Save</button>
                     <button onclick="deleteContact('${contact.name}', '${contact.number}')" class="btn btn-sm btn-danger">Delete</button>
                 </td>
             `;
@@ -48,6 +54,27 @@ async function loadContacts() {
     }
 }
 
+// Save edited contact
+async function saveContact(button, oldName, oldNumber) {
+    const row = button.closest('tr');
+    const newName = row.children[1].textContent.trim();
+    const newNumber = row.children[2].textContent.trim();
+
+    try {
+        const response = await fetch(`/api/contact/save?oldName=${oldName}&oldNumber=${oldNumber}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name: newName, number: newNumber })
+        });
+        if (response.ok) {
+            loadContacts();
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+// Delete contact
 async function deleteContact(name, number) {
     if (!confirm('Are you sure you want to delete this contact?')) return;
 
@@ -63,56 +90,30 @@ async function deleteContact(name, number) {
     }
 }
 
-async function editContact(name, number) {
-    try {
-        const response = await fetch(`/api/contact/edit?name=${name}&number=${number}`);
-        const contact = await response.json();
-
-        document.getElementById('name').value = contact.name;
-        document.getElementById('number').value = contact.number;
-
-        // Store old values for update
-        document.getElementById('oldName').value = name;
-        document.getElementById('oldNumber').value = number;
-
-        // Change form submit handler
-        document.getElementById('contactForm').onsubmit = updateContact;
-        document.querySelector('button[type="submit"]').textContent = 'Update Contact';
-    } catch (error) {
-        console.error('Error:', error);
-    }
-}
-
-async function updateContact(event) {
-    event.preventDefault();
-    const formData = {
-        name: document.getElementById('name').value,
-        number: document.getElementById('number').value
-    };
-
-    const oldName = document.getElementById('oldName').value;
-    const oldNumber = document.getElementById('oldNumber').value;
+// Search contacts
+async function searchContacts() {
+    const searchName = document.getElementById('searchName').value.trim();
 
     try {
-        const response = await fetch(`/api/contact/save?oldName=${oldName}&oldNumber=${oldNumber}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(formData)
+        const response = await fetch(`/api/contact/search?name=${searchName}`);
+        const contacts = await response.json();
+        const tbody = document.querySelector('#contactsTable tbody');
+        tbody.innerHTML = '';
+
+        contacts.forEach((contact, index) => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${index + 1}</td>
+                <td>${contact.name}</td>
+                <td>${contact.number}</td>
+                <td>
+                    <button onclick="saveContact(this, '${contact.name}', '${contact.number}')" class="btn btn-sm btn-success">Save</button>
+                    <button onclick="deleteContact('${contact.name}', '${contact.number}')" class="btn btn-sm btn-danger">Delete</button>
+                </td>
+            `;
+            tbody.appendChild(tr);
         });
-
-        if (response.ok) {
-            loadContacts();
-            document.getElementById('contactForm').reset();
-            // Reset form to add mode
-            document.getElementById('contactForm').onsubmit = addContact;
-            document.querySelector('button[type="submit"]').textContent = 'Add Contact';
-        }
     } catch (error) {
         console.error('Error:', error);
     }
 }
-
-// Load contacts when page loads
-document.addEventListener('DOMContentLoaded', loadContacts);

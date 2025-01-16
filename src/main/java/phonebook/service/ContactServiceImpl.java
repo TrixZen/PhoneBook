@@ -46,4 +46,11 @@ public class ContactServiceImpl implements ContactService {
 
         contactRepository.save(contact);
     }
+
+    @Override
+    public List<Contact> searchName(String searchName) {
+        return contactRepository.findByName(searchName)
+                .orElseThrow(() -> new IllegalArgumentException("Contact not found"));
+    }
+
 }

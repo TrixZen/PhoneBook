@@ -46,4 +46,8 @@ public class ContactController {
         contactServiceImpl.editContact(oldContact, oldName, oldNumber);
         return "Contact updated successfully";
     }
+    @GetMapping("/search")
+    public List<Contact> searchName(@RequestParam String searchName) {
+        return contactServiceImpl.searchName(searchName);
+    }
 }

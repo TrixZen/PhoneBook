@@ -9,4 +9,5 @@ public interface ContactService {
     void deleteContact(String name, String number);
     Contact findContact(String name, String number);
     void editContact(Contact contact, String oldName, String oldNumber);
+    List<Contact> searchName(String searchName);
 }
