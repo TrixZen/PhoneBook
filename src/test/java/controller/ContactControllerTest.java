@@ -40,7 +40,7 @@ public class ContactControllerTest {
     void testAddContact() throws Exception {
         Contact contact = new Contact("John Doe", "1234567890");
 
-        when(contactService.addContact(any(Contact.class))).thenReturn(contact);
+        //when(contactService.addContact(any(Contact.class)));
 
         mockMvc.perform(post("/api/contact/add")
                         .contentType(MediaType.APPLICATION_JSON)

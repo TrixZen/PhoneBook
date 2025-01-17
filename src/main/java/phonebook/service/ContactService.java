@@ -16,8 +16,12 @@ public class ContactService {
     private ContactRepository contactRepository;
 
     // Add new contact
-    public Contact addContact(Contact contact) {
-        return contactRepository.save(contact);
+    public void addContact(Contact newContact) {
+        Optional<Contact> contact = contactRepository.findByNameAndNumber(newContact.getName(), newContact.getNumber());
+        if (contact.isPresent()) {
+            throw new IllegalArgumentException("Харилцагч аль хэдийн байна!");
+        }
+        contactRepository.save(newContact);
     }
 
     // Get all contacts
@@ -33,13 +37,25 @@ public class ContactService {
             return contacts;
         }
         contacts = contactRepository.findByNumberContainingIgnoreCase(searchData);
+        if (contacts.isEmpty()) {
+            throw new IllegalArgumentException("Харилцагч олдсонгүй!");
+        }
         return contacts;
     }
 
     // Update existing contact
     public void updateContact(ContactUpdateRequest contactUpdateRequest) {
-        Optional<Contact> existingContact = contactRepository.findByNameAndNumber(contactUpdateRequest.oldName(), contactUpdateRequest.oldNumber());
+        Optional<Contact> existingContact = contactRepository.findByNameAndNumber(
+                contactUpdateRequest.oldName(), contactUpdateRequest.oldNumber());
         if (existingContact.isPresent()) {
+            // Шинэ мэдээллийг шалгах
+            Optional<Contact> existingContactWithNewInfo = contactRepository.findByNameAndNumber(
+                    contactUpdateRequest.newName(), contactUpdateRequest.newNumber());
+
+            if (existingContactWithNewInfo.isPresent()) {
+                throw new IllegalArgumentException("Зарим харилцагчийн шинэ нэр болон дугаар нь аль хэдийн байна.");
+            }
+
             Contact contact = existingContact.get();
             contact.setName(contactUpdateRequest.newName());
             contact.setNumber(contactUpdateRequest.newNumber());

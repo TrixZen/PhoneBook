@@ -1,6 +1,7 @@
 package phonebook.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import phonebook.model.Contact;
@@ -8,6 +9,7 @@ import phonebook.model.ContactUpdateRequest;
 import phonebook.service.ContactService;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/contact")
@@ -18,9 +20,16 @@ public class ContactController {
 
     // Add new contact
     @PostMapping("/add")
-    public ResponseEntity<Contact> addContact(@RequestBody Contact contact) {
-        return ResponseEntity.ok(contactService.addContact(contact));
+    public ResponseEntity<?> addContact(@RequestBody Contact contact) {
+        try {
+            contactService.addContact(contact);
+            return ResponseEntity.ok().build();
+        } catch (IllegalArgumentException e) {
+            Map<String, String> errorResponse = Map.of("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
+        }
     }
+
     // Add all new contacts
     @PostMapping("/addAll")
     public ResponseEntity<List<Contact>> addAllContact(@RequestBody List<Contact> contacts) {
@@ -35,19 +44,29 @@ public class ContactController {
 
     // Search contacts by name
     @GetMapping("/search")
-    public ResponseEntity<List<Contact>> searchContacts(@RequestParam String searchData) {
-        return ResponseEntity.ok(contactService.searchContactsByData(searchData));
+    public ResponseEntity<?> searchContacts(@RequestParam String searchData) {
+        try {
+            List<Contact> contacts = contactService.searchContactsByData(searchData);
+            return ResponseEntity.ok(contacts);
+        } catch (IllegalArgumentException e) {
+            Map<String, String> errorResponse = Map.of("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
+        }
     }
 
     // Update contact
     @PutMapping("/saveSelected")
-    public ResponseEntity<Void> saveSelectedContacts(@RequestBody List<ContactUpdateRequest> contacts) {
+    public ResponseEntity<?> updateContact(@RequestBody List<ContactUpdateRequest> contacts) {
         for (ContactUpdateRequest contact : contacts) {
-            contactService.updateContact(contact);
+            try {
+                contactService.updateContact(contact);
+            } catch (IllegalArgumentException e) {
+                Map<String, String> errorResponse = Map.of("message", e.getMessage());
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
+            }
         }
         return ResponseEntity.ok().build();
     }
-
 
     // Delete contact
     @DeleteMapping("/delete")

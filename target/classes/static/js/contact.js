@@ -33,9 +33,11 @@ async function addContact(event) {
         if (response.ok) {
             loadContacts();
             document.getElementById('contactForm').reset();
+        } else {
+            errorMessage(response);
         }
     } catch (error) {
-        console.error('Алдаа:', error);
+        console.error(error)
     }
 }
 
@@ -91,11 +93,10 @@ async function saveContacts() {
 
         if (response.ok) {
             alert('Харилцагчийг амжилттай хадгаллаа!');
-            loadContacts();
         } else {
-            const error = await response.text();
-            alert(`Харилцагчийг хадгалахад алдаа гарлаа!: ${error}`);
+            errorMessage(response);
         }
+        loadContacts();
     } catch (error) {
         console.error('Алдаа:', error);
     }
@@ -134,10 +135,11 @@ async function searchContacts() {
     try {
         const response = await fetch(`/api/contact/search?searchData=${searchData}`);
 
-        renderContacts(response);
-
         if (response.ok) {
             document.getElementById('searchData').value = '';
+            renderContacts(response);
+        } else {
+            errorMessage(response);
         }
 
     } catch (error) {
