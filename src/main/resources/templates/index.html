@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Phonebook</title>
+    <title>Утасны дэвтэр</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css">
     <style>
         .contact-form {
@@ -39,40 +39,40 @@
     </style>
 </head>
 <body class="bg-dark">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+
+<script src="/js/utility.js"></script>
 <div class="container">
-    <h1 class="text-center mt-4 mb-4">Phonebook</h1>
+    <h1 class="text-center mt-4 mb-4">Утасны дэвтэр</h1>
 
     <!-- Contact Form -->
     <div class="contact-form bg-white">
-        <h3 class="mb-4">Add New Contact</h3>
+        <h3 class="mb-4">Шинэ Харилцагч Нэмэх</h3>
         <form id="contactForm" onsubmit="addContact(event)">
             <div class="mb-3">
-                <label for="name" class="form-label">Name:</label>
+                <label for="name" class="form-label">Нэр:</label>
                 <input type="text" class="form-control" id="name" required>
             </div>
             <div class="mb-3">
-                <label for="number" class="form-label">Number:</label>
+                <label for="number" class="form-label">Утасны дугаар:</label>
                 <input type="text" class="form-control" id="number" required>
             </div>
-            <button type="submit" class="btn btn-primary w-100">Add Contact</button>
+            <button type="submit" class="btn btn-primary w-100">Харилцагч Нэмэх</button>
         </form>
     </div>
-
-    <!-- Search Bar & Action Buttons -->
-
 
     <!-- Contacts Table -->
     <div class="contacts-table">
         <div class="my-4">
             <div class="d-flex justify-content-between align-items-center">
                 <div class="input-group w-50">
-                    <input type="text" id="searchData" class="form-control" placeholder="Search by name and number" required>
-                    <button id="searchButton" class="btn btn-primary">Search</button>
+                    <input type="text" id="searchData" class="form-control" placeholder="Нэр, дугаараар хайх" required>
+                    <button id="searchButton" class="btn btn-primary">Хайх</button>
                 </div>
                 <div>
-                    <button id="viewAllButton" class="btn btn-secondary">View All</button>
-                    <button id="deleteSelectedButton" class="btn btn-danger">Delete Selected</button>
-                    <button id="saveButton" class="btn btn-success">Save</button>
+                    <button id="viewAllButton" class="btn btn-secondary">Үзэх</button>
+                    <button id="deleteSelectedButton" class="btn btn-danger">Устгах</button>
+                    <button id="saveButton" class="btn btn-success">Хадгалах</button>
                 </div>
             </div>
         </div>
@@ -82,20 +82,18 @@
                 <tr>
                     <th><input type="checkbox" id="selectAllCheckbox" onclick="toggleSelectAll()"></th>
                     <th>#</th>
-                    <th>Name</th>
-                    <th>Number</th>
-                    <th>Actions</th>
+                    <th>Нэр</th>
+                    <th>Дугаар</th>
+                    <th>Үйлдэл</th>
                 </tr>
                 </thead>
                 <tbody>
-                <!-- Contacts will be loaded here dynamically -->
+                <!-- Харилцагчдыг энд динамикаар ачаалах болно -->
                 </tbody>
             </table>
         </div>
     </div>
 </div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
 <script src="/js/contact.js"></script>
 
 </body>
