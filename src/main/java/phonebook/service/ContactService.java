@@ -26,17 +26,23 @@ public class ContactService {
     }
 
     // Search contacts by name
-    public List<Contact> searchContactsByName(String name) {
-        return contactRepository.findByNameContainingIgnoreCase(name);
+    public List<Contact> searchContactsByData(String searchData) {
+        List<Contact> contacts;
+        contacts = contactRepository.findByNameContainingIgnoreCase(searchData);
+        if (contacts != null && !contacts.isEmpty()) {
+            return contacts;
+        }
+        contacts = contactRepository.findByNumberContainingIgnoreCase(searchData);
+        return contacts;
     }
 
     // Update existing contact
     public void updateContact(ContactUpdateRequest contactUpdateRequest) {
-        Optional<Contact> existingContact = contactRepository.findByNameAndNumber(contactUpdateRequest.getOldName(), contactUpdateRequest.getOldNumber());
+        Optional<Contact> existingContact = contactRepository.findByNameAndNumber(contactUpdateRequest.oldName(), contactUpdateRequest.oldNumber());
         if (existingContact.isPresent()) {
             Contact contact = existingContact.get();
-            contact.setName(contactUpdateRequest.getNewName());
-            contact.setNumber(contactUpdateRequest.getNewNumber());
+            contact.setName(contactUpdateRequest.newName());
+            contact.setNumber(contactUpdateRequest.newNumber());
             contactRepository.save(contact);
         }
     }

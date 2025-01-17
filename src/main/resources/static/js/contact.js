@@ -14,10 +14,23 @@ document.addEventListener('DOMContentLoaded', () => {
 // Add contact
 async function addContact(event) {
     event.preventDefault();
-    const formData = {
-        name: document.getElementById('name').value,
-        number: document.getElementById('number').value
-    };
+
+    const name = document.getElementById('name').value.trim();
+    const number = document.getElementById('number').value.trim();
+
+    // Нэр зөвхөн үсэг агуулж байгааг шалгах
+    if (!/^[a-zA-Zа-яА-ЯёЁ]+$/.test(name)) {
+        alert("Нэр зөвхөн үсэг агуулсан байх ёстой!");
+        return;
+    }
+
+    // Дугаар зөвхөн 8 оронтой тоо байхыг шалгах
+    if (!/^\d{8}$/.test(number)) {
+        alert("Дугаар заавал 8 оронтой байх ёстой!");
+        return;
+    }
+
+    const formData = { name, number };
 
     try {
         const response = await fetch('/api/contact/add', {
@@ -33,6 +46,7 @@ async function addContact(event) {
         console.error('Error:', error);
     }
 }
+
 
 // Load all contacts
 async function loadContacts() {
@@ -142,10 +156,10 @@ async function deleteContact(name, number) {
 
 // Search contacts
 async function searchContacts() {
-    const searchName = document.getElementById('searchName').value.trim();
+    const searchData = document.getElementById('searchData').value.trim();
 
     try {
-        const response = await fetch(`/api/contact/search?searchName=${searchName}`);
+        const response = await fetch(`/api/contact/search?searchData=${searchData}`);
         const contacts = await response.json();
         const tbody = document.querySelector('#contactsTable tbody');
         tbody.innerHTML = '';
@@ -164,7 +178,7 @@ async function searchContacts() {
             tbody.appendChild(tr);
         });
         if (response.ok) {
-             document.getElementById('searchName').value = '';
+             document.getElementById('searchData').value = '';
 
         }
     } catch (error) {

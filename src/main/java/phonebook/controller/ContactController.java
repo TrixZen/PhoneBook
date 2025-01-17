@@ -21,20 +21,24 @@ public class ContactController {
     public ResponseEntity<Contact> addContact(@RequestBody Contact contact) {
         return ResponseEntity.ok(contactService.addContact(contact));
     }
+    // Add all new contacts
     @PostMapping("/addAll")
     public ResponseEntity<List<Contact>> addAllContact(@RequestBody List<Contact> contacts) {
         return ResponseEntity.ok(contactService.addAllContact(contacts));
     }
+
     // Get all contacts
     @GetMapping("/")
     public ResponseEntity<List<Contact>> getAllContacts() {
         return ResponseEntity.ok(contactService.getAllContacts());
     }
+
     // Search contacts by name
     @GetMapping("/search")
-    public ResponseEntity<List<Contact>> searchContacts(@RequestParam String searchName) {
-        return ResponseEntity.ok(contactService.searchContactsByName(searchName));
+    public ResponseEntity<List<Contact>> searchContacts(@RequestParam String searchData) {
+        return ResponseEntity.ok(contactService.searchContactsByData(searchData));
     }
+
     // Update contact
     @PutMapping("/saveSelected")
     public ResponseEntity<Void> saveSelectedContacts(@RequestBody List<ContactUpdateRequest> contacts) {

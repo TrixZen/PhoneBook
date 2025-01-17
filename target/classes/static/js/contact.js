@@ -142,10 +142,10 @@ async function deleteContact(name, number) {
 
 // Search contacts
 async function searchContacts() {
-    const searchName = document.getElementById('searchName').value.trim();
+    const searchData = document.getElementById('searchData').value.trim();
 
     try {
-        const response = await fetch(`/api/contact/search?searchName=${searchName}`);
+        const response = await fetch(`/api/contact/search?searchData=${searchData}`);
         const contacts = await response.json();
         const tbody = document.querySelector('#contactsTable tbody');
         tbody.innerHTML = '';
@@ -164,7 +164,7 @@ async function searchContacts() {
             tbody.appendChild(tr);
         });
         if (response.ok) {
-             document.getElementById('searchName').value = '';
+             document.getElementById('searchData').value = '';
 
         }
     } catch (error) {
