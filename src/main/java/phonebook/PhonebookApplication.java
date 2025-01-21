@@ -17,6 +17,6 @@ public class PhonebookApplication {
     mvn spring-boot:run  # Spring Boot application run хийх
     */
     /*
-        Hello world i love you bitch
+        test
      */
 }
