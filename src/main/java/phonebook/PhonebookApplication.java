@@ -16,4 +16,7 @@ public class PhonebookApplication {
     mvn install      # local repository руу суулгах
     mvn spring-boot:run  # Spring Boot application run хийх
     */
+    /*
+        Hello world i love you bitch
+     */
 }
