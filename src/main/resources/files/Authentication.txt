@@ -1,0 +1,25 @@
+1. Authentication (Нэвтрэлт)
+Authentication нь дараах үндсэн зарчмаар ажиллана:
+
+Хэрэглэгч ID, нууц үг оруулна
+Систем шалгана (Database, OAuth, JWT гэх мэтээр)
+Хэрэв зөв бол нэвтрүүлнэ, буруу бол татгалзана
+🔹 Authentication-ийн төрлүүд:
+
+Session-based Authentication (Traditional approach)
+Token-based Authentication (JWT, OAuth2, OpenID Connect)
+Multi-Factor Authentication (MFA) (Нэмэлт баталгаажуулалт – OTP, Email код гэх мэт)
+Biometric Authentication (Face ID, Fingerprint гэх мэт)
+🔹 Жишээ (Spring Security – JWT Authentication)
+
+java
+Copy
+Edit
+// Хэрэглэгчийн нэр, нууц үгийг шалгах
+public String authenticate(String username, String password) {
+    UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+    if (!passwordEncoder.matches(password, userDetails.getPassword())) {
+        throw new BadCredentialsException("Invalid credentials");
+    }
+    return jwtUtil.generateToken(username);
+}
