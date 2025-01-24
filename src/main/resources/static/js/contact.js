@@ -30,6 +30,8 @@ async function addContact(event) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(formData)
         });
+
+
         if (response.ok) {
             loadContacts();
             document.getElementById('contactForm').reset();

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css">
+</head>
+<body class="bg-black">
+<div class="container">
+    <div class="card mt-5 p-4 mx-auto" style="max-width: 400px;">
+        <h2 class="text-center">Sign Up</h2>
+        <form id="signupForm">
+            <div class="mb-3">
+                <label for="username" class="form-label">Username</label>
+                <input type="text" class="form-control" id="username" name="username" required>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Sign Up</button>
+        </form>
+        <p id="errorMessage" class="text-center text-danger mt-3"></p>
+        <p class="text-center mt-3">Бүртгэлтэй юу? <a href="/login">Нэвтрэх</a></p>
+    </div>
+</div>
+
+<script>
+    document.getElementById("signupForm").addEventListener("submit", async function(event) {
+        event.preventDefault();
+
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+
+        const response = await fetch("register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password })
+        });
+
+        if (response.ok) {
+            window.location.href = "/login";
+        } else {
+            document.getElementById("errorMessage").innerText = "Бүртгэл амжилтгүй!";
+        }
+    });
+</script>
+</body>
+</html>

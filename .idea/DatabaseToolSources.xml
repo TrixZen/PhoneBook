@@ -8,6 +8,7 @@
         <introspection-scope>
           <node kind="schema">
             <name qname="phonecontact" operator="@" />
+            <name qname="jwt_security" operator="@" />
             <name qname="mysql" operator="@" />
             <name qname="performance_schema" operator="@" />
             <name qname="sys" operator="@" />
