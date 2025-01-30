@@ -1,0 +1,21 @@
+2. Authorization (Зөвшөөрөл)
+Authorization нь дараах байдлаар ажиллана:
+
+Authentication хийгдсэний дараа хэрэглэгчид ямар эрхтэйг тодорхойлно
+Систем хэрэглэгчийн эрхийг шалгана (Role, Permission)
+Хэрэв зөвшөөрөгдсөн эрхтэй бол үйлдэл хийхийг зөвшөөрнө
+🔹 Authorization-ийн төрлүүд:
+
+Role-Based Access Control (RBAC) – Хэрэглэгч тодорхой "role" (e.g., ADMIN, USER) дээр суурилан эрх авна
+Permission-Based Access Control – Role-оос гадна "үйлдлийн зөвшөөрөл" (e.g., READ_USERS, EDIT_POSTS) ашиглана
+Attribute-Based Access Control (ABAC) – Дата болон хэрэглэгчийн нөхцөл дээр суурилсан эрх олгох
+🔹 Жишээ (Spring Security – Role-Based Authorization)
+
+java
+Copy
+Edit
+@PreAuthorize("hasRole('ADMIN')")
+@GetMapping("/admin")
+public String adminAccess() {
+    return "Admin page";
+}
