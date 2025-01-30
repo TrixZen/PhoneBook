@@ -20,9 +20,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable) // AJAX-тай ажиллахын тулд CSRF идэвхгүй болгоно
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/login", "/sign", "/register").permitAll()
-                        .requestMatchers(
-                                "/index",
-                                "/api/contact/**")
+                        .requestMatchers("/index", "/webhook/api/contact/**")
                         .authenticated()
                         .anyRequest().authenticated()
                 )

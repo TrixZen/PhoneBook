@@ -25,12 +25,11 @@ async function addContact(event) {
     const formData = { name, number };
 
     try {
-        const response = await fetch('/api/contact/add', {
+        const response = await fetch('http://localhost:5678/webhook/api/contact/add', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(formData)
         });
-
 
         if (response.ok) {
             loadContacts();
@@ -46,7 +45,7 @@ async function addContact(event) {
 // Load all contacts
 async function loadContacts() {
     try {
-        const response = await fetch('/api/contact/');
+        const response = await fetch('http://localhost:5678/webhook/api/contact/');
 
         renderContacts(response);
 
@@ -65,32 +64,31 @@ async function saveContacts() {
         return;
    }
   // Сонгогдсон бүх мөрний шинэ утгуудыг авах
-    const contactsToSave = [];
+    const contacts = [];
 
     // Бүх чекбоксуудыг шалгах
     for (let i = 0; i < selectedCheckboxes.length; i++) {
         const checkbox = selectedCheckboxes[i];
         const row = checkbox.closest('tr'); // Сонгосон мөрийг авах
 
-        const oldName = checkbox.getAttribute('data-name');
-        const oldNumber = checkbox.getAttribute('data-number');
-        const newName = row.children[2].textContent.trim();
-        const newNumber = row.children[3].textContent.trim();
+        const id = checkbox.getAttribute('data-id');
+        const name = row.children[2].textContent.trim();
+        const number = row.children[3].textContent.trim();
 
         // Нэр, дугаарын шалгалтыг хийх
-        if (!validateForm(newName, newNumber)) {
+        if (!validateForm(name, number)) {
             return; // Алдаа гарсан бол процесс зогсоно
         }
 
         // Шалгалт амжилттай бол шинэ мэдээллийг нэмнэ
-        contactsToSave.push({ oldName, oldNumber, newName, newNumber });
+        contacts.push({id, name, number });
     }
 
     try {
-        const response = await fetch('/api/contact/saveSelected', {
+        const response = await fetch('http://localhost:5678/webhook/api/contact/saveSelected', {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(contactsToSave)
+            body: JSON.stringify(contacts)
         });
 
         if (response.ok) {
@@ -105,11 +103,11 @@ async function saveContacts() {
 }
 
 // Delete contact
-async function deleteContact(name, number) {
+async function deleteContact(id) {
     if (!confirm('Та энэ харилцагчийг устгахдаа итгэлтэй байна уу?')) return;
 
     try {
-        const response = await fetch(`/api/contact/delete?name=${name}&number=${number}`, {
+        const response = await fetch(`http://localhost:5678/webhook/api/contact/delete?id=${id}}`, {
             method: 'DELETE'
         });
         if (response.ok) {
@@ -135,7 +133,7 @@ async function searchContacts() {
     }
 
     try {
-        const response = await fetch(`/api/contact/search?searchData=${searchData}`);
+        const response = await fetch(`http://localhost:5678/webhook/api/contact/search?searchData=${searchData}`);
 
         if (response.ok) {
             document.getElementById('searchData').value = '';
@@ -171,14 +169,13 @@ async function deleteSelectedContacts() {
 
     const contactsToDelete = [];
     selectedCheckboxes.forEach(checkbox => {
-        contactsToDelete.push({
-            name: checkbox.getAttribute('data-name'),
-            number: checkbox.getAttribute('data-number')
-        });
+        contactsToDelete.push(
+            checkbox.getAttribute('data-id')
+        );
     });
 
     try {
-        const response = await fetch('/api/contact/deleteSelected', {
+        const response = await fetch('http://localhost:5678/webhook/api/contact/deleteSelected', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(contactsToDelete)

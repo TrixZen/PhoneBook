@@ -6,14 +6,14 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="phonebook" />
+        <module name="Phonebook" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="18" />
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="phonebook" options="-parameters" />
+      <module name="Phonebook" options="-parameters" />
     </option>
   </component>
 </project>

@@ -40,12 +40,12 @@ async function renderContacts(response) {
     contacts.forEach((contact, index) => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td><input type="checkbox" class="contact-checkbox" data-name="${contact.name}" data-number="${contact.number}"></td>
+            <td><input type="checkbox" class="contact-checkbox" data-id="${contact.id}"></td>
             <td>${index + 1}</td>
             <td contenteditable="true">${contact.name}</td>
             <td contenteditable="true">${contact.number}</td>
             <td>
-                <button onclick="deleteContact('${contact.name}', '${contact.number}')" class="btn btn-sm btn-danger">Устгах</button>
+                <button onclick="deleteContact('${contact.id}')" class="btn btn-sm btn-danger">Устгах</button>
             </td>
         `;
         tbody.appendChild(tr);
